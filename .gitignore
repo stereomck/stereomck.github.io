@@ -1,0 +1,13 @@
+# Channel sites — each has its own repo
+contextwindow/
+postsynaptic/
+diary-of-an-ai-pm/
+
+# Deployment script (not needed on GitHub)
+deploy-all-sites.sh
+
+# Old versions
+index.html.v1.html
+
+# macOS
+.DS_Store

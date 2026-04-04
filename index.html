@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Michael Kent — AI Product Leader</title>
+  <meta name="description" content="AI Product Leader building agentic systems. 20 years enterprise software. Currently: LEX, a three-layer AI platform at Login Enterprise. Creator of Context Window and PostSynaptic." />
+  <meta name="author" content="Michael Kent" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Michael Kent — AI Product Leader" />
+  <meta property="og:description" content="AI Product Leader building agentic systems. Creator of Context Window · PostSynaptic · Diary of an AI PM." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://michaelkent.dev" />
+
+  <link rel="canonical" href="https://michaelkent.dev" />
+
+  <!-- Unified font stack — matches all three channel brands -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;1,9..144,300&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── Brand token system ──────────────────────────────────────
+       Hub palette: Void/Signal/Paper (PostSynaptic-adjacent).
+       Matches ecosystem: CW uses --token green, PS uses --signal cyan.
+       This page uses --signal cyan as the personal brand accent.
+       ─────────────────────────────────────────────────────────── */
+    :root {
+      --void:         #0D0D0E;
+      --void-soft:    #111316;
+      --void-card:    #0E1117;
+      --void-border:  rgba(255,255,255,0.07);
+      --void-border-h:rgba(255,255,255,0.14);
+
+      /* Personal accent — Signal cyan (mk://) */
+      --signal:       #00D4FF;
+      --signal-dim:   #0090B3;
+      --signal-glow:  rgba(0,212,255,0.10);
+
+      /* Channel accents */
+      --token:        #2FA865;   /* Context Window green */
+      --token-glow:   rgba(47,168,101,0.10);
+      --gilt:         #C8A96E;   /* Diary gold */
+      --gilt-glow:    rgba(200,169,110,0.10);
+
+      --paper:        #E8EAF0;
+      --paper-dim:    #9AA0AD;
+      --green-ok:     #4ADE80;
+      --amber:        #F5A623;
+
+      --font-serif:   'Fraunces', Georgia, serif;
+      --font-mono:    'DM Mono', 'Courier New', monospace;
+      --font-sans:    'DM Sans', system-ui, sans-serif;
+
+      --max:          1100px;
+      --radius:       8px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--void);
+      color: var(--paper);
+      font-family: var(--font-sans);
+      font-weight: 300;
+      font-size: 16px;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Grain overlay ───────────────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      background-size: 256px 256px;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.55;
+    }
+
+    /* ── Nav ─────────────────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      height: 60px;
+      background: rgba(13,13,14,0.88);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--void-border);
+    }
+
+    .nav-logo {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--signal);
+      text-decoration: none;
+      letter-spacing: 0.06em;
+    }
+
+    .nav-logo span { color: var(--paper-dim); }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: var(--paper-dim);
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--paper); }
+
+    .nav-links .nav-channels {
+      display: flex;
+      gap: 0.75rem;
+      margin-left: 0.5rem;
+      padding-left: 1.5rem;
+      border-left: 1px solid var(--void-border);
+    }
+
+    .nav-channel-pill {
+      font-family: var(--font-mono);
+      font-size: 0.65rem !important;
+      letter-spacing: 0.1em !important;
+      padding: 0.25rem 0.65rem;
+      border: 1px solid var(--void-border);
+      border-radius: 3px;
+      transition: border-color 0.2s, color 0.2s !important;
+    }
+
+    .nav-channel-pill.cw  { color: var(--token) !important; border-color: rgba(47,168,101,0.25); }
+    .nav-channel-pill.ps  { color: var(--signal) !important; border-color: rgba(0,212,255,0.25); }
+    .nav-channel-pill.cw:hover { border-color: var(--token); }
+    .nav-channel-pill.ps:hover { border-color: var(--signal); }
+
+    /* ── Layout ──────────────────────────────────────────────── */
+    section { position: relative; z-index: 1; }
+
+    .container {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* ── Hero ────────────────────────────────────────────────── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 8rem 0 5rem;
+      overflow: hidden;
+    }
+
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(90px);
+      opacity: 0.09;
+      pointer-events: none;
+    }
+
+    .blob-1 { width: 600px; height: 600px; background: var(--signal); top: -200px; right: -100px; }
+    .blob-2 { width: 400px; height: 400px; background: var(--token); bottom: 0; left: -100px; }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--signal);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-eyebrow::before {
+      content: '';
+      display: block;
+      width: 7px; height: 7px;
+      background: var(--green-ok);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.45; transform: scale(0.75); }
+    }
+
+    h1 {
+      font-family: var(--font-serif);
+      font-weight: 300;
+      font-size: clamp(2.8rem, 5vw, 4.2rem);
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.5rem;
+      color: var(--paper);
+    }
+
+    h1 em {
+      font-style: italic;
+      color: var(--signal);
+    }
+
+    .hero-desc {
+      font-size: 1rem;
+      color: var(--paper-dim);
+      line-height: 1.75;
+      margin-bottom: 2.5rem;
+      max-width: 460px;
+    }
+
+    .hero-desc strong { color: var(--paper); font-weight: 500; }
+
+    .btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1.15rem;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-decoration: none;
+      border-radius: var(--radius);
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--signal);
+      color: var(--void);
+    }
+
+    .btn-primary:hover { background: #22e5ff; transform: translateY(-1px); }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--paper);
+      border: 1px solid var(--void-border);
+    }
+
+    .btn-secondary:hover { border-color: var(--void-border-h); transform: translateY(-1px); }
+
+    /* ── Terminal card ───────────────────────────────────────── */
+    .hero-terminal {
+      background: var(--void-card);
+      border: 1px solid var(--void-border);
+      border-radius: 10px;
+      overflow: hidden;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+    }
+
+    .terminal-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.7rem 1rem;
+      background: rgba(255,255,255,0.03);
+      border-bottom: 1px solid var(--void-border);
+    }
+
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dot-red    { background: #ff5f57; }
+    .dot-yellow { background: #febc2e; }
+    .dot-green  { background: #28c840; }
+
+    .terminal-title {
+      flex: 1;
+      text-align: center;
+      color: var(--paper-dim);
+      font-size: 0.68rem;
+    }
+
+    .terminal-body { padding: 1.5rem; line-height: 2; }
+
+    .t-muted  { color: var(--paper-dim); }
+    .t-green  { color: var(--green-ok); }
+    .t-blue   { color: var(--signal); }
+    .t-cyan   { color: var(--signal); }
+    .t-amber  { color: var(--amber); }
+    .t-white  { color: var(--paper); }
+    .t-gilt   { color: var(--gilt); }
+
+    .cursor {
+      display: inline-block;
+      width: 7px; height: 0.9em;
+      background: var(--signal);
+      vertical-align: text-bottom;
+      animation: blink 1.2s step-end infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* ── Section headers ─────────────────────────────────────── */
+    .section-header { margin-bottom: 3rem; }
+
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--signal);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+
+    h2 {
+      font-family: var(--font-serif);
+      font-weight: 300;
+      font-size: clamp(1.75rem, 3vw, 2.4rem);
+      letter-spacing: -0.025em;
+      line-height: 1.15;
+      color: var(--paper);
+    }
+
+    .section-sub {
+      color: var(--paper-dim);
+      margin-top: 0.65rem;
+      font-size: 0.95rem;
+    }
+
+    /* ── What I Do ───────────────────────────────────────────── */
+    #what {
+      padding: 6rem 0;
+      border-top: 1px solid var(--void-border);
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+    }
+
+    .card {
+      background: var(--void-soft);
+      border: 1px solid var(--void-border);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .card:hover { border-color: var(--void-border-h); transform: translateY(-2px); }
+
+    .card-icon {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--signal);
+      margin-bottom: 1rem;
+    }
+
+    .card h3 {
+      font-family: var(--font-serif);
+      font-weight: 300;
+      font-size: 1.1rem;
+      letter-spacing: -0.01em;
+      margin-bottom: 0.5rem;
+      color: var(--paper);
+    }
+
+    .card p {
+      color: var(--paper-dim);
+      font-size: 0.875rem;
+      line-height: 1.65;
+    }
+
+    /* ── Currently Building ──────────────────────────────────── */
+    #building {
+      padding: 6rem 0;
+      border-top: 1px solid var(--void-border);
+    }
+
+    .projects {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+    }
+
+    .project-card {
+      background: var(--void-soft);
+      border: 1px solid var(--void-border);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .project-card:hover { transform: translateY(-2px); }
+    .project-card.cw:hover  { border-color: rgba(47,168,101,0.35); }
+    .project-card.ps:hover  { border-color: rgba(0,212,255,0.35); }
+    .project-card.dai:hover { border-color: rgba(200,169,110,0.35); }
+
+    .project-shortcode {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 0.1rem;
+    }
+
+    .project-shortcode.cw  { color: var(--token); }
+    .project-shortcode.ps  { color: var(--signal); }
+    .project-shortcode.dai { color: var(--gilt); }
+
+    .project-tag {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--paper-dim);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .project-card h3 {
+      font-family: var(--font-serif);
+      font-weight: 300;
+      font-size: 1.15rem;
+      letter-spacing: -0.01em;
+      color: var(--paper);
+    }
+
+    .project-card p {
+      color: var(--paper-dim);
+      font-size: 0.875rem;
+      line-height: 1.65;
+      flex: 1;
+    }
+
+    .project-link {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 500;
+      margin-top: 0.25rem;
+      transition: gap 0.2s;
+    }
+
+    .project-link.cw  { color: var(--token); }
+    .project-link.ps  { color: var(--signal); }
+    .project-link.dai { color: var(--gilt); }
+
+    .project-link svg { width: 11px; height: 11px; flex-shrink: 0; }
+    .project-card:hover .project-link svg { transform: translate(2px, -2px); transition: transform 0.2s; }
+
+    /* ── Selected Work ───────────────────────────────────────── */
+    #work {
+      padding: 6rem 0;
+      border-top: 1px solid var(--void-border);
+    }
+
+    .work-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .work-item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 2rem;
+      background: var(--void-soft);
+      border: 1px solid var(--void-border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      align-items: start;
+      transition: border-color 0.2s;
+    }
+
+    .work-item:hover { border-color: var(--void-border-h); }
+
+    .work-company {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--signal);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+
+    .work-item h3 {
+      font-family: var(--font-serif);
+      font-weight: 300;
+      font-size: 1.1rem;
+      letter-spacing: -0.01em;
+      margin-bottom: 0.5rem;
+      color: var(--paper);
+    }
+
+    .work-item p {
+      color: var(--paper-dim);
+      font-size: 0.875rem;
+      line-height: 1.65;
+    }
+
+    .work-stat { text-align: right; white-space: nowrap; }
+
+    .stat-number {
+      font-family: var(--font-mono);
+      font-size: 2rem;
+      font-weight: 500;
+      color: var(--signal);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 0.72rem;
+      color: var(--paper-dim);
+      margin-top: 0.3rem;
+      font-family: var(--font-mono);
+      letter-spacing: 0.04em;
+    }
+
+    /* ── Contact ─────────────────────────────────────────────── */
+    #contact {
+      padding: 6rem 0;
+      border-top: 1px solid var(--void-border);
+    }
+
+    .contact-inner { max-width: 600px; }
+
+    .contact-email {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      color: var(--paper);
+      text-decoration: none;
+      border-bottom: 1px solid var(--void-border);
+      padding-bottom: 0.25rem;
+      margin: 1.5rem 0 2rem;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .contact-email:hover { color: var(--signal); border-color: var(--signal); }
+
+    .social-links { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+
+    .social-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.55rem 1rem;
+      background: var(--void-soft);
+      border: 1px solid var(--void-border);
+      border-radius: var(--radius);
+      color: var(--paper-dim);
+      text-decoration: none;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      transition: all 0.2s;
+    }
+
+    .social-link:hover { color: var(--paper); border-color: var(--void-border-h); }
+    .social-link.cw:hover  { color: var(--token); border-color: rgba(47,168,101,0.4); }
+    .social-link.ps:hover  { color: var(--signal); border-color: rgba(0,212,255,0.4); }
+
+    /* ── Footer ──────────────────────────────────────────────── */
+    footer {
+      position: relative;
+      z-index: 1;
+      padding: 1.5rem 2rem;
+      border-top: 1px solid var(--void-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-left {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--paper-dim);
+      letter-spacing: 0.06em;
+    }
+
+    .footer-channels {
+      display: flex;
+      gap: 1.25rem;
+    }
+
+    .footer-channels a {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-channels a.cw  { color: rgba(47,168,101,0.5); }
+    .footer-channels a.ps  { color: rgba(0,212,255,0.5); }
+    .footer-channels a.dai { color: rgba(200,169,110,0.5); }
+    .footer-channels a:hover { opacity: 1; filter: brightness(1.4); }
+
+    /* ── Fade-in ─────────────────────────────────────────────── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+
+    .fade-in.visible { opacity: 1; transform: none; }
+
+    /* ── Responsive ──────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .hero-grid { grid-template-columns: 1fr; }
+      .hero-terminal { display: none; }
+      .cards { grid-template-columns: 1fr; }
+      .projects { grid-template-columns: 1fr; }
+      .work-item { grid-template-columns: 1fr; }
+      .work-stat { text-align: left; }
+    }
+
+    @media (max-width: 640px) {
+      nav { padding: 0 1.25rem; }
+      .nav-links { display: none; }
+      .container { padding: 0 1.25rem; }
+      footer { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Nav ───────────────────────────────────────────────── -->
+  <nav>
+    <a href="#" class="nav-logo">mk<span>://</span></a>
+    <ul class="nav-links">
+      <li><a href="#what">About</a></li>
+      <li><a href="#building">Building</a></li>
+      <li><a href="#work">Work</a></li>
+      <li><a href="#contact">Contact</a></li>
+      <li class="nav-channels">
+        <a href="https://contextwindow.to" target="_blank" rel="noopener" class="nav-channel-pill cw">CW:[]</a>
+        <a href="https://postsynaptic.dev"  target="_blank" rel="noopener" class="nav-channel-pill ps">PS://</a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- ── Hero ──────────────────────────────────────────────── -->
+  <section id="hero">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="container">
+      <div class="hero-grid">
+
+        <div>
+          <div class="hero-eyebrow">Available for AI product leadership roles</div>
+          <h1>
+            Michael<br/>
+            <em>Kent.</em>
+          </h1>
+          <p class="hero-desc">
+            <strong>AI Product Leader.</strong> I build AI systems that actually ship —
+            not decks, not prototypes. 20 years enterprise software.
+            Currently: agentic AI systems at Login Enterprise.
+          </p>
+          <div class="btn-group">
+            <a href="/resume.pdf" class="btn btn-primary">
+              <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+              Resume
+            </a>
+            <a href="https://linkedin.com/in/stereomck" class="btn btn-secondary" target="_blank" rel="noopener">
+              LinkedIn
+            </a>
+            <a href="#building" class="btn btn-secondary">
+              See what I'm building →
+            </a>
+          </div>
+        </div>
+
+        <!-- Terminal -->
+        <div class="hero-terminal">
+          <div class="terminal-bar">
+            <div class="dot dot-red"></div>
+            <div class="dot dot-yellow"></div>
+            <div class="dot dot-green"></div>
+            <div class="terminal-title">lex-architecture.sh</div>
+          </div>
+          <div class="terminal-body">
+            <div><span class="t-muted">$</span> <span class="t-green">./describe</span> <span class="t-cyan">--project</span> LEX</div>
+            <div>&nbsp;</div>
+            <div><span class="t-cyan">name:</span>      <span class="t-white">Login Enterprise EXpert</span></div>
+            <div><span class="t-cyan">type:</span>      <span class="t-white">Agentic AI Platform</span></div>
+            <div><span class="t-cyan">arch:</span>      <span class="t-white">Hybrid RAG</span></div>
+            <div><span class="t-cyan">stack:</span>     <span class="t-white">Azure AI Foundry + AI Search</span></div>
+            <div>&nbsp;</div>
+            <div><span class="t-cyan">layers:</span></div>
+            <div>  <span class="t-green">✓</span> <span class="t-white">Product Expert</span>  <span class="t-muted">// live Q1 2026</span></div>
+            <div>  <span class="t-amber">◐</span> <span class="t-white">Config Expert</span>   <span class="t-muted">// MCP · Q2-Q3 2026</span></div>
+            <div>  <span class="t-muted">○</span> <span class="t-white">Data Expert</span>    <span class="t-muted">// analytics · Q4</span></div>
+            <div>&nbsp;</div>
+            <div><span class="t-cyan">impact:</span></div>
+            <div>  onboarding  <span class="t-green">↓ 40%</span></div>
+            <div>  tickets     <span class="t-green">↓ 35%</span></div>
+            <div>  customers   <span class="t-white">150+ Fortune 500</span></div>
+            <div>&nbsp;</div>
+            <div><span class="t-muted">$</span> <span class="cursor"></span></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── What I Do ──────────────────────────────────────────── -->
+  <section id="what">
+    <div class="container">
+      <div class="section-header fade-in">
+        <div class="section-label">// capabilities</div>
+        <h2>What I Do</h2>
+        <p class="section-sub">Technical depth. Strategic altitude. Everything in between.</p>
+      </div>
+      <div class="cards">
+        <div class="card fade-in">
+          <div class="card-icon">01 · AI Product</div>
+          <h3>AI Product Leadership</h3>
+          <p>From zero-to-one AI features to multi-layer agentic platforms. I define the architecture, own the roadmap, and ship the thing.</p>
+        </div>
+        <div class="card fade-in">
+          <div class="card-icon">02 · Technical</div>
+          <h3>Technical Depth</h3>
+          <p>I write C#. I debate architecture in refinement. I understand RAG pipelines, MCP servers, and inference tradeoffs — not from a blog post.</p>
+        </div>
+        <div class="card fade-in">
+          <div class="card-icon">03 · Enterprise</div>
+          <h3>Enterprise Scale</h3>
+          <p>20 years shipping enterprise software to Fortune 500 companies. I know what breaks in production at scale, because I've fixed it.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Currently Building ─────────────────────────────────── -->
+  <!-- ── MAINTENANCE: add new channels/projects here ─────────
+       Copy a .project-card block. Set class to cw / ps / dai.
+       Update shortcode, tag, h3, p, and project-link accordingly.
+       ──────────────────────────────────────────────────────── -->
+  <section id="building">
+    <div class="container">
+      <div class="section-header fade-in">
+        <div class="section-label">// channels</div>
+        <h2>Currently Building</h2>
+        <p class="section-sub">Three channels. One story. Building in public.</p>
+      </div>
+      <div class="projects">
+
+        <a href="https://contextwindow.to" class="project-card cw fade-in" target="_blank" rel="noopener">
+          <div class="project-shortcode cw">CW:[]</div>
+          <div class="project-tag">Thought Leadership</div>
+          <h3>Context Window</h3>
+          <p>The PM's guide to the AI stack. Strategy, technical depth, and the craft of building AI products — for practitioners, not beginners.</p>
+          <div class="project-link cw">
+            contextwindow.to
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+          </div>
+        </a>
+
+        <a href="https://postsynaptic.dev" class="project-card ps fade-in" target="_blank" rel="noopener">
+          <div class="project-shortcode ps">PS://</div>
+          <div class="project-tag">Technical Builds</div>
+          <h3>PostSynaptic</h3>
+          <p>Where the code lives. RAG pipelines, agentic systems, MCP servers — built in the open with repos you can actually use.</p>
+          <div class="project-link ps">
+            postsynaptic.dev
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+          </div>
+        </a>
+
+        <a href="https://praxisenablement.com" class="project-card dai fade-in" target="_blank" rel="noopener">
+          <div class="project-shortcode dai">D/AI</div>
+          <div class="project-tag">Personal Journey · Coming Soon</div>
+          <h3>Diary of an AI PM</h3>
+          <p>The honest account of a career that doesn't exist yet. What it actually takes to transition into AI product management — with receipts.</p>
+          <div class="project-link dai">
+            diaryofanaipm.com
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+          </div>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Selected Work ──────────────────────────────────────── -->
+  <!-- ── MAINTENANCE: add work items newest at top ───────────
+       Copy a .work-item block. Update company, h3, p, stat.
+       ──────────────────────────────────────────────────────── -->
+  <section id="work">
+    <div class="container">
+      <div class="section-header fade-in">
+        <div class="section-label">// selected work</div>
+        <h2>What I've Shipped</h2>
+        <p class="section-sub">Real products. Real numbers. Real consequences.</p>
+      </div>
+      <div class="work-list">
+
+        <div class="work-item fade-in">
+          <div>
+            <div class="work-company">Login Enterprise · CPO · 2020–Present</div>
+            <h3>LEX — Login Enterprise EXpert</h3>
+            <p>Designed and shipped a three-layer agentic AI platform on Azure AI Foundry using hybrid RAG architecture. Layer 1 (live): natural language product knowledge for 150+ Fortune 500 enterprise customers. Layer 2: MCP Server integration for configuration awareness. Layer 3: intelligent test result analysis and recommendations.</p>
+          </div>
+          <div class="work-stat">
+            <div class="stat-number">40%</div>
+            <div class="stat-label">onboarding reduction</div>
+          </div>
+        </div>
+
+        <div class="work-item fade-in">
+          <div>
+            <div class="work-company">RiverMeadow Software · CTO · 2014–2020</div>
+            <h3>Lift and Evolve</h3>
+            <p>Created an in-flight cloud migration upgrade capability that became RiverMeadow's flagship product. Delivered automated migration tools processing 1,000+ workload migrations at 98% success rate for Fortune 1000 customers. Drove 3× customer base growth through product-market fit work and strategic partnerships with AWS, Azure, and Google Cloud.</p>
+          </div>
+          <div class="work-stat">
+            <div class="stat-number">70%</div>
+            <div class="stat-label">faster than manual</div>
+          </div>
+        </div>
+
+        <div class="work-item fade-in">
+          <div>
+            <div class="work-company">CenterBeam · Director, Chief Architect · 2006–2013</div>
+            <h3>Enterprise PaaS Platform</h3>
+            <p>Launched a Platform-as-a-Service offering for web and database hosting that grew to $5M+ ARR within 18 months. Built and shipped a mobile device management platform supporting 100,000+ endpoints across iOS, Android, and Windows for 125,000+ enterprise users.</p>
+          </div>
+          <div class="work-stat">
+            <div class="stat-number">$5M</div>
+            <div class="stat-label">ARR in 18 months</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Contact ────────────────────────────────────────────── -->
+  <section id="contact">
+    <div class="container">
+      <div class="contact-inner">
+        <div class="section-header fade-in">
+          <div class="section-label">// contact</div>
+          <h2>Let's Talk</h2>
+          <p class="section-sub">Open to AI product leadership roles in the Bay Area. Also happy to talk shop about agentic systems, RAG architecture, or enterprise AI.</p>
+        </div>
+        <!-- ── MAINTENANCE: replace with your actual email ── -->
+        <a href="mailto:michael@contextwindow.to" class="contact-email fade-in">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/></svg>
+          michael@contextwindow.to
+        </a>
+        <div class="social-links fade-in">
+          <a href="https://linkedin.com/in/stereomck" class="social-link" target="_blank" rel="noopener">
+            <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+            LinkedIn
+          </a>
+          <a href="https://github.com/stereomck" class="social-link" target="_blank" rel="noopener">
+            <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+            GitHub
+          </a>
+          <a href="https://contextwindow.to" class="social-link cw" target="_blank" rel="noopener">
+            CW:[]
+          </a>
+          <a href="https://postsynaptic.dev" class="social-link ps" target="_blank" rel="noopener">
+            PS://
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Footer ────────────────────────────────────────────── -->
+  <footer>
+    <span class="footer-left">© 2026 Michael Kent · michaelkent.dev</span>
+    <div class="footer-channels">
+      <a href="https://contextwindow.to" class="cw" target="_blank" rel="noopener">CW:[]</a>
+      <a href="https://postsynaptic.dev"  class="ps" target="_blank" rel="noopener">PS://</a>
+      <a href="https://diaryofanaipm.com" class="dai" target="_blank" rel="noopener">D/AI</a>
+    </div>
+  </footer>
+
+  <script>
+    // Fade-in on scroll
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 70);
+        }
+      });
+    }, { threshold: 0.08 });
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
